@@ -91,7 +91,6 @@ function noteNameToFreq(noteName) {
   octave = parseInt(octave);
 
   let freq = A4 * ratioToA[letter] * multiplier;
-  console.log(freq);
   freq *= Math.pow(2, octave - 4);
 
   return freq;
