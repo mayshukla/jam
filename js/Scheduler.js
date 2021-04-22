@@ -17,8 +17,8 @@ export default class Scheduler {
    * Start scheduling notes.
    */
   start() {
-    // Start the next cycle in 1 second
-    this.nextCycleStartTime = this.audioContext.currentTime + 1;
+    // Start the next cycle in 0.5 seconds
+    this.nextCycleStartTime = this.audioContext.currentTime + 0.5;
     this.lookAheadAndSchedule();
   }
 
@@ -33,7 +33,7 @@ export default class Scheduler {
    * @param type The type of oscillator (e.g. "sine").
    * @param sequence The sequence object (e.g. a ListSequence)
    */
-  setOscillator(name, type, sequence) {
+  play(name, type, sequence) {
     this.oscillators.set(name, {
       "type": type,
       "sequence": sequence

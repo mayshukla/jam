@@ -6,6 +6,8 @@
 
   <title>JAM</title>
 
+  <link rel="stylesheet" href="css/style.css">
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
@@ -13,8 +15,15 @@
   <script src="js/main.js" type="module"></script>
 
   <p>Click in the input box to start the audio engine.</p>
+  <p>Press ctrl+enter to run code.</p>
 
-  <input type="text" id="editor" />
+  <div contenteditable="true" id="editor" rows="20" cols="50">
+let sequence1 = seq("c3 d3 eb3 f3 g3 a3 bb3 c4");<br/>
+s.play("myOsc1", "square", sequence1);<br/>
+<br/>
+let sequence2 = seq("c2 eb2 g2 eb2");<br/>
+s.play("myOsc2", "sawtooth", sequence2);<br/>
+  </div>
 
 </body>
 </html>
