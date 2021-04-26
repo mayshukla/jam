@@ -7,6 +7,18 @@ Inspired by other live coding systems such as:
 - [Tidal Cycles](https://tidalcycles.org/)
 - [Gibber](https://github.com/gibber-cc/gibber)
 
+## Running Locally
+
+Install [deno](https://deno.land/).
+
+Run server:
+
+```bash
+deno run --inspect --allow-net --allow-read server.ts
+```
+
+Go to `http://localhost:8000/` in a browser.
+
 ## Project Status
 
 I just started working on this so basically nothing is implemented yet :(
