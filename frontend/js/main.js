@@ -1,7 +1,20 @@
 import Scheduler from './Scheduler.js';
 import { ListSequence, seq } from './Sequence.js';
+import { SERVER_WEBSOCKET_URL } from "./common/config.js";
 
 let s;
+
+function connectToServerSocket() {
+  const socket = new WebSocket(SERVER_WEBSOCKET_URL);
+
+  socket.addEventListener("open", (event) => {
+    socket.send("hello from client");
+  });
+
+  socket.addEventListener("message", (event) => {
+    console.log("got message from server:", event.data);
+  });
+}
 
 function setup() {
   // Remove event listener so setup only happens once
@@ -33,6 +46,8 @@ function evalUserCode() {
 }
 
 function main() {
+  connectToServerSocket();
+
   let editor = document.querySelector("#editor");
 
   // Chrome insists that audio stuff not be done until the user interacts with
