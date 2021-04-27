@@ -14,7 +14,7 @@ Install [deno](https://deno.land/).
 Run server:
 
 ```bash
-deno run --inspect --allow-net --allow-read server.ts
+deno run --allow-net --allow-read server.ts
 ```
 
 Go to `http://localhost:8000/` in a browser.
