@@ -1,6 +1,8 @@
 import Scheduler from './Scheduler.js';
 import { ListSequence, seq } from './Sequence.js';
 import { SERVER_WEBSOCKET_URL } from "./common/config.js";
+import { Message, FullTextMessage, DiffMessage }
+from "./common/messages.js";
 
 let s;
 
@@ -8,11 +10,12 @@ function connectToServerSocket() {
   const socket = new WebSocket(SERVER_WEBSOCKET_URL);
 
   socket.addEventListener("open", (event) => {
-    socket.send("hello from client");
+    console.log("Connected to server websocket.");
   });
 
   socket.addEventListener("message", (event) => {
-    console.log("got message from server:", event.data);
+    let message = Message.fromJSON(event.data);
+    console.log("got message from server:", message);
   });
 }
 
@@ -57,7 +60,7 @@ function main() {
 
   // Keep track of which keys are pressed
   // https://stackoverflow.com/questions/5203407/how-to-detect-if-multiple-keys-are-pressed-at-once-using-javascript
-  let keyStates = {}
+  let keyStates = {};
 
   document.addEventListener("keydown", event => {
     keyStates[event.keyCode] = true;
