@@ -1,6 +1,7 @@
 import { SERVER_WEBSOCKET_URL } from "./common/config.js";
 import { Message, FullTextMessage, DiffMessage }
 from "./common/messages.js";
+import DiffMatchPatch from "./common/DiffMatchPatch.js";
 
 /**
  * Manages the clients connection to the server.
@@ -14,7 +15,7 @@ export default class ServerConnection {
     this.editorElement = editorElement;
     this.editorElement.addEventListener("input", () => this.handleEdit());
 
-    this.dmp = new diff_match_patch();
+    this.dmp = new DiffMatchPatch();
   }
 
   connect() {
@@ -42,8 +43,7 @@ export default class ServerConnection {
 
   handleEdit() {
     let text = this.text;
-    let diff = this.dmp.diff_main(this.shadow, text);
-    this.dmp.diff_cleanupSemantic(diff);
+    let diff = this.dmp.diff(this.shadow, text);
     this.shadow = text;
 
     let message = new DiffMessage(diff);
