@@ -12,6 +12,9 @@ export default class ServerConnection {
    */
   constructor(editorElement) {
     this.editorElement = editorElement;
+    this.editorElement.addEventListener("input", () => this.handleEdit());
+
+    this.dmp = new diff_match_patch();
   }
 
   connect() {
@@ -25,7 +28,9 @@ export default class ServerConnection {
       let message = Message.fromJSON(event.data);
       if (message instanceof FullTextMessage) {
 	console.log("Got full text from server:", message);
-	this.editorElement.textContent = message.text;
+	let text = message.text;
+	this.shadow = text;
+	this.text = text;
       } else if (message instanceof DiffMessage) {
 	console.log("Got diff from server:", message);
 	// TODO
@@ -33,5 +38,23 @@ export default class ServerConnection {
 	console.error("Unexpected message type.");
       }
     });
+  }
+
+  handleEdit() {
+    let text = this.text;
+    let diff = this.dmp.diff_main(this.shadow, text);
+    this.dmp.diff_cleanupSemantic(diff);
+    this.shadow = text;
+
+    let message = new DiffMessage(diff);
+    this.socket.send(message.toJSON());
+  }
+
+  set text(text) {
+    this.editorElement.textContent = text;
+  }
+
+  get text() {
+    return this.editorElement.textContent;
   }
 }

@@ -3,3 +3,15 @@ The code is this directory is taking from the Google diff-match-patch library.
 Link to repo: https://github.com/google/diff-match-patch
 
 The license associated with diff-match-patch is located here in the file "LICENCE".
+
+The only change I made from the origin code was that I replaced the last line of the file which was originially this:
+
+```
+this.diff_match_patch=diff_match_patch;this.DIFF_DELETE=DIFF_DELETE;this.DIFF_INSERT=DIFF_INSERT;this.DIFF_EQUAL=DIFF_EQUAL;
+```
+
+To this:
+
+```
+window.diff_match_patch=diff_match_patch;window.DIFF_DELETE=DIFF_DELETE;window.DIFF_INSERT=DIFF_INSERT;window.DIFF_EQUAL=DIFF_EQUAL;
+```
