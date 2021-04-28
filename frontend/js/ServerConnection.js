@@ -31,7 +31,7 @@ export default class ServerConnection {
 	console.log("Got full text from server:", message);
 	let text = message.text;
 	this.shadow = text;
-	this.text = text;
+	this.setText(text);
       } else if (message instanceof DiffMessage) {
 	this.handleDiff(message);
       } else {
@@ -41,7 +41,7 @@ export default class ServerConnection {
   }
 
   handleEdit() {
-    let text = this.text;
+    let text = this.getText();
     let diff = this.dmp.diff(this.shadow, text);
     this.shadow = text;
 
@@ -53,14 +53,18 @@ export default class ServerConnection {
     let diff = diffMessage.diff;
     this.shadow = this.dmp.applyDiffExact(this.shadow, diff);
 
-    this.text = this.dmp.applyDiffFuzzy(this.text, diff);
+    this.setText(this.dmp.applyDiffFuzzy(this.getText(), diff));
   }
 
-  set text(text) {
+  setText(text) {
+    // TODO save cursor position
+
     this.editorElement.innerText = text;
+
+    // TODO restore cursor position
   }
 
-  get text() {
+  getText() {
     return this.editorElement.innerText;
   }
 }
