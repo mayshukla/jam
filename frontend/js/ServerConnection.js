@@ -41,7 +41,8 @@ export default class ServerConnection {
   }
 
   handleEdit() {
-    let text = this.getText();
+    let text = this.getEditorText();
+    this.setText(text);
     let diff = this.dmp.diff(this.shadow, text);
     this.shadow = text;
 
@@ -57,14 +58,15 @@ export default class ServerConnection {
   }
 
   setText(text) {
-    // TODO save cursor position
-
-    this.editorElement.innerText = text;
-
-    // TODO restore cursor position
+    this.text = text;
+    this.editorElement.value = text;
   }
 
   getText() {
-    return this.editorElement.innerText;
+    return this.text;
+  }
+
+  getEditorText() {
+    return this.editorElement.value;
   }
 }
