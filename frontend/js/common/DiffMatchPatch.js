@@ -24,7 +24,10 @@ export default class DiffMatchPatch {
    * The patch will be an exact patch.
    */
   applyDiffExact(text, diff) {
-    // TODO make exact
+    this.dmp.Match_Distance = 0;
+    this.dmp.Match_Threshold = 0;
+    this.dmp.Patch_DeleteThreshold = 0;
+
     let patch = this.dmp.patch_make(text, diff);
     let newText = this.dmp.patch_apply(patch, text)[0];
     return newText;
@@ -34,7 +37,11 @@ export default class DiffMatchPatch {
    * Like applyDiffExact but the patch is fuzzy.
    */
   applyDiffFuzzy(text, diff) {
-    // TODO make fuzzy
+    // TODO experiment with different values
+    this.dmp.Match_Distance = 1000;
+    this.dmp.Match_Threshold = 0.5;
+    this.dmp.Patch_DeleteThreshold = 0.5;
+
     let patch = this.dmp.patch_make(text, diff);
     let newText = this.dmp.patch_apply(patch, text)[0];
     return newText;
