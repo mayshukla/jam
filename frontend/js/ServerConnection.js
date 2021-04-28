@@ -33,8 +33,7 @@ export default class ServerConnection {
 	this.shadow = text;
 	this.text = text;
       } else if (message instanceof DiffMessage) {
-	console.log("Got diff from server:", message);
-	// TODO
+	this.handleDiff(message);
       } else {
 	console.error("Unexpected message type.");
       }
@@ -48,6 +47,13 @@ export default class ServerConnection {
 
     let message = new DiffMessage(diff);
     this.socket.send(message.toJSON());
+  }
+
+  handleDiff(diffMessage) {
+    let diff = diffMessage.diff;
+    this.shadow = this.dmp.applyDiffExact(this.shadow, diff);
+
+    this.text = this.dmp.applyDiffFuzzy(this.text, diff);
   }
 
   set text(text) {

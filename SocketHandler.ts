@@ -29,7 +29,7 @@ export default class SocketHandler {
 	let message = Message.fromJSON(ev);
 	if (message instanceof DiffMessage) {
 	  let diff = message.diff;
-	  this.handleClientDiff(sock, message, diff);
+	  await this.handleClientDiff(sock, message, diff);
 	} else {
 	  console.error("Unexpected message type.");
 	}
@@ -44,15 +44,30 @@ export default class SocketHandler {
     }
   }
 
-  handleClientDiff(sock: WebSocket, message: DiffMessage, diff: Array<Object>) {
+  async handleClientDiff(sock: WebSocket, message: DiffMessage, diff: Array<Object>) {
     // Generate and apply patch to shadow
     let shadow = this.socketsToShadows.get(sock);
     let newShadow = this.dmp.applyDiffExact(shadow, diff);
     this.socketsToShadows.set(sock, newShadow);
-    console.log(newShadow);
 
     // Generate and apply patch to text
+    this.serverText = this.dmp.applyDiffFuzzy(this.serverText, diff);
 
-    // Send diffs to all clients
+    await this.updateAllClients();
+  }
+
+  /**
+   * Sends diffs to all clients.
+   * Should be called whenever serverText is updated.
+   */
+  async updateAllClients() {
+    this.socketsToShadows.forEach(async (shadow, sock) => {
+      // TODO check if diff is empty
+      let diff = this.dmp.diff(shadow, this.serverText);
+      this.socketsToShadows.set(sock, this.serverText);
+
+      let message = new DiffMessage(diff);
+      await sock.send(message.toJSON());
+    });
   }
 }
