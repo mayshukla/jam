@@ -57,10 +57,10 @@ export default class ServerConnection {
   }
 
   set text(text) {
-    this.editorElement.textContent = text;
+    this.editorElement.innerText = text;
   }
 
   get text() {
-    return this.editorElement.textContent;
+    return this.editorElement.innerText;
   }
 }

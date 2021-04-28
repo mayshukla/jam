@@ -14,6 +14,7 @@ export default class DiffMatchPatch {
    */
   diff(text1, text2) {
     let diff = this.dmp.diff_main(text1, text2);
+    // TODO is cleanup worthwhile?
     this.dmp.diff_cleanupSemantic(diff);
     return diff;
   }
