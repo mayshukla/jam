@@ -82,3 +82,7 @@ function play(name, type, sequence) {
   interpreterInstance.scheduler.play(name, type, sequence);
 }
 
+function setCyclesPerSecond(cps) {
+  interpreterInstance.scheduler.setCyclesPerSecond(cps);
+}
+
