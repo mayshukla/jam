@@ -81,7 +81,7 @@ function parseNote(noteName) {
   let letter = noteName.slice(0, 1);
   letter = letter.toLowerCase();
 
-  if (letter == "x") {
+  if (letter === "x") {
     return -1;
   }
 
