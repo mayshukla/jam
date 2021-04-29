@@ -39,6 +39,8 @@ I just started working on this so basically nothing is implemented yet :(
   - [ ] effects
   - [ ] samples
   - [ ] LFOs
+  - [ ] add support for parsing midi note numbers (e.g. 60 for middle C)
+	- this may be more intuitive for people who don't know music theory
 - UI improvements
   - [ ] don't crash or stop music when an error occurs
   - [ ] show other users' cursors
