@@ -7,6 +7,14 @@ export default class Editor {
     this.editor = ace.edit(id);
     this.editor.setTheme("ace/theme/monokai");
     this.editor.session.setMode("ace/mode/javascript");
+
+    // Default to sublime keybindings
+    this.editor.setKeyboardHandler("ace/keyboard/sublime");
+
+    this.keybindingsSelector = document.querySelector("#keybindings");
+    this.keybindingsSelector.addEventListener("input", () => {
+      this.selectKeybindings();
+    });
   }
 
   getText() {
@@ -35,5 +43,19 @@ export default class Editor {
    */
   getCursor() {
     return this.editor.selection.getCursor();
+  }
+
+  selectKeybindings() {
+    let index = this.keybindingsSelector.selectedIndex;
+    let value = this.keybindingsSelector.options[index].value;
+    if (value === "emacs") {
+      this.editor.setKeyboardHandler("ace/keyboard/emacs");
+    } else if (value === "vim") {
+      this.editor.setKeyboardHandler("ace/keyboard/vim");
+    } else if (value === "sublime") {
+      this.editor.setKeyboardHandler("ace/keyboard/sublime");
+    } else if (value === "vscode") {
+      this.editor.setKeyboardHandler("ace/keyboard/vscode");
+    }
   }
 }
