@@ -54,7 +54,9 @@ export class ListSequence {
  * Convenience function to turn a string into a ListSequence object
  */
 export function seq(text) {
-  let list = text.split(" ").map(x => parseNote(x));
+  let list = text.split(" ")
+      .filter(x => x.length > 0)
+      .map(x => parseNote(x));
   return new ListSequence(list);
 }
 
@@ -76,7 +78,6 @@ let ratioToA = {
  * "x" will be converted into a rest (frequence = -1).
  */
 function parseNote(noteName) {
-
   let letter = noteName.slice(0, 1);
   letter = letter.toLowerCase();
 
