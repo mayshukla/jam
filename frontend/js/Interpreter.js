@@ -16,11 +16,11 @@ class Interpreter {
 
     document.addEventListener("keydown", event => {
       this.keyStates[event.keyCode] = true;
-      
-      // 17 = ctrl
-      // 13 = enter
-      if (this.keyStates[17] == true
-	  && this.keyStates[13] == true) {
+
+      // 18 = alt
+      // 82 = 'r'
+      if (this.keyStates[18] == true
+	  && this.keyStates[82] == true) {
 	if (this.started !== true) {
 	  this.startAudioEngine();
 	}

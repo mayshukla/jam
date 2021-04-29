@@ -54,8 +54,6 @@ export default class Editor {
       this.editor.setKeyboardHandler("ace/keyboard/vim");
     } else if (value === "sublime") {
       this.editor.setKeyboardHandler("ace/keyboard/sublime");
-    } else if (value === "vscode") {
-      this.editor.setKeyboardHandler("ace/keyboard/vscode");
     }
   }
 }
