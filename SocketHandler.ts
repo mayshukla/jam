@@ -34,8 +34,6 @@ export default class SocketHandler {
 	  console.error("Unexpected message type.");
 	}
       } else if (isWebSocketCloseEvent(ev)) {
-	console.log("Client closed socket");
-
 	// Delete socket from list
 	this.socketsToShadows.delete(sock);
       } else {
