@@ -8,12 +8,11 @@ import DiffMatchPatch from "./common/DiffMatchPatch.js";
  */
 export default class ServerConnection {
   /**
-   * @param editorElement The Element which contains the user's code in its
-   * textContent field.
+   * @param editor An Editor object.
    */
-  constructor(editorElement) {
-    this.editorElement = editorElement;
-    this.editorElement.addEventListener("input", () => this.handleEdit());
+  constructor(editor) {
+    this.editor = editor;
+    this.editor.addEditListener(() => this.handleEdit());
 
     this.dmp = new DiffMatchPatch();
   }
@@ -31,7 +30,8 @@ export default class ServerConnection {
 	console.log("Got full text from server:", message);
 	let text = message.text;
 	this.shadow = text;
-	this.setText(text);
+	this.editor.setText(text);
+	this.text = text;
       } else if (message instanceof DiffMessage) {
 	this.handleDiff(message);
       } else {
@@ -41,10 +41,13 @@ export default class ServerConnection {
   }
 
   handleEdit() {
-    let text = this.getEditorText();
-    this.setText(text);
-    let diff = this.dmp.diff(this.shadow, text);
-    this.shadow = text;
+    if (this.debounce === true) {
+      this.debounce = false;
+      return;
+    }
+    this.text = this.editor.getText();
+    let diff = this.dmp.diff(this.shadow, this.text);
+    this.shadow = this.text;
 
     let message = new DiffMessage(diff);
     this.socket.send(message.toJSON());
@@ -54,19 +57,8 @@ export default class ServerConnection {
     let diff = diffMessage.diff;
     this.shadow = this.dmp.applyDiffExact(this.shadow, diff);
 
-    this.setText(this.dmp.applyDiffFuzzy(this.getText(), diff));
-  }
-
-  setText(text) {
-    this.text = text;
-    this.editorElement.value = text;
-  }
-
-  getText() {
-    return this.text;
-  }
-
-  getEditorText() {
-    return this.editorElement.value;
+    this.debounce = true;
+    this.text = this.dmp.applyDiffFuzzy(this.text, diff);
+    this.editor.setText(this.text);
   }
 }

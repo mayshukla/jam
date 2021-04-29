@@ -3,20 +3,12 @@ import { ListSequence, seq } from './Sequence.js';
 
 class Interpreter {
   /**
-   * @param editorElement The Element which contains the user's code in its
-   * textContent field.
+   * @param editor An Editor object.
    */
-  initialize(editorElement) {
-    this.editorElement = editorElement;
+  initialize(editor) {
+    this.editor = editor;
     this.started = false;
     this.scheduler = null;
-
-    // Chrome insists that audio stuff not be done until the user interacts with
-    // the page in some way.
-    // https://developers.google.com/web/updates/2017/09/autoplay-policy-changes#webaudio
-    this.editorElement.addEventListener(
-      "click",
-      () => this.startAudioEngine());
 
     // Keep track of which keys are pressed
     // https://stackoverflow.com/questions/5203407/how-to-detect-if-multiple-keys-are-pressed-at-once-using-javascript
@@ -29,6 +21,9 @@ class Interpreter {
       // 13 = enter
       if (this.keyStates[17] == true
 	  && this.keyStates[13] == true) {
+	if (this.started !== true) {
+	  this.startAudioEngine();
+	}
 	this.evalUserCode();
       }
     });
@@ -42,10 +37,8 @@ class Interpreter {
     if (this.started === true) {
       return;
     }
+    console.log("starting engine");
     this.started = true;
-
-    // Remove event listener so setup only happens once
-    this.editorElement.removeEventListener("click", this.startAudioEngine);
 
     let audioContext = new AudioContext();
     this.scheduler = new Scheduler(audioContext);
@@ -58,7 +51,7 @@ class Interpreter {
    * Fetches all the code in the input box and evaluates it.
    */
   evalUserCode() {
-    let text = this.editorElement.textContent;
+    let text = this.editor.getText();
     
     try {
       // TODO find a way to not use eval
