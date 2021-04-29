@@ -31,6 +31,14 @@ class Interpreter {
     document.addEventListener("keyup", event => {
       this.keyStates[event.keyCode] = false;
     });
+
+    let stopButton = document.querySelector("#stop-button");
+    stopButton.addEventListener("click", () => {
+      if (this.scheduler !== null
+	 && this.scheduler !== undefined) {
+	this.scheduler.stop();
+      }
+    });
   }
 
   startAudioEngine() {

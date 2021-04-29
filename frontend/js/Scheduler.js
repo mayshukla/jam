@@ -11,6 +11,10 @@ export default class Scheduler {
     this.cyclesPerSecond = 1;
 
     this.oscillators = new Map();
+
+    // Place a gain node before final output to allow muting everything.
+    this.destination = audioContext.createGain();
+    this.destination.connect(this.audioContext.destination);
   }
 
   /**
@@ -34,6 +38,9 @@ export default class Scheduler {
    * @param sequence The sequence object (e.g. a ListSequence)
    */
   play(name, type, sequence) {
+    // Unmute in case previously muted.
+    this.unmute();
+
     this.oscillators.set(name, {
       "type": type,
       "sequence": sequence
@@ -93,9 +100,25 @@ export default class Scheduler {
     // TODO can we avoid creating an oscillator every time?
     let osc = this.audioContext.createOscillator();
     osc.type = type;
-    osc.connect(this.audioContext.destination);
+    osc.connect(this.destination);
     osc.frequency.setValueAtTime(freq, this.audioContext.currentTime);
     osc.start(startTime);
     osc.stop(startTime + duration);
+  }
+
+  /**
+   * Stops sound and removes all oscillators.
+   */
+  stop() {
+    this.mute();
+    this.oscillators.clear();
+  }
+
+  mute() {
+    this.destination.gain.setValueAtTime(0, this.audioContext.currentTime);
+  }
+
+  unmute() {
+    this.destination.gain.setValueAtTime(1, this.audioContext.currentTime);
   }
 }

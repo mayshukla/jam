@@ -28,7 +28,7 @@ I just started working on this so basically nothing is implemented yet :(
 - Implement backend with syncing
   - [x] implement differential syncing
 - Add features to user API
-  - [ ] silence function
+  - [x] silence function
   - [ ] sequence manipulation through decorators and dot operators
 
 	  e.g. seq("c4 e4 g4").rand().half()
