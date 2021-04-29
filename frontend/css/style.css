@@ -9,7 +9,7 @@ p {
 }
 
 #editor {
-    font-family: "Courier New", monospace;
+    font-family: "Inconsolata", "Courier New", monospace;
     font-size: 1rem;
     height: 30em;
 }
