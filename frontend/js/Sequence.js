@@ -22,6 +22,8 @@ export class Note {
 export class ListSequence {
   /**
    * @param notesList A list of frequences of notes.
+   *
+   * A frequency of -1 represents a rest.
    */
   constructor(notesList) {
     this.notesList = notesList;
@@ -37,8 +39,11 @@ export class ListSequence {
 
     for (let i = 0; i < length; ++i) {
       let freq = this.notesList[i];
-      // TODO allow variable duration
-      result.push(new Note(freq, duration * i, duration));
+      // Do not push rests to result.
+      if (freq > 0) {
+	// TODO allow variable duration
+	result.push(new Note(freq, duration * i, duration));
+      }
     }
 
     return result;
@@ -49,7 +54,7 @@ export class ListSequence {
  * Convenience function to turn a string into a ListSequence object
  */
 export function seq(text) {
-  let list = text.split(" ").map(x => noteNameToFreq(x));
+  let list = text.split(" ").map(x => parseNote(x));
   return new ListSequence(list);
 }
 
@@ -68,11 +73,16 @@ let ratioToA = {
 
 /**
  * Converts a note name such as "A4" to a frequency such as 440.0.
+ * "x" will be converted into a rest (frequence = -1).
  */
-function noteNameToFreq(noteName) {
+function parseNote(noteName) {
 
   let letter = noteName.slice(0, 1);
   letter = letter.toLowerCase();
+
+  if (letter == "x") {
+    return -1;
+  }
 
   let flatOrSharp = noteName.slice(1, 2);
 
