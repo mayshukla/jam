@@ -26,9 +26,7 @@ I just started working on this so basically nothing is implemented yet :(
 ## TODO
 
 - Implement backend with syncing
-  - [ ] implement rudimentary syncing by sending enter buffer
-  - [ ] implement differential syncing
-  - [ ] implement 
+  - [x] implement differential syncing
 - Add features to user API
   - [ ] silence function
   - [ ] sequence manipulation through decorators and dot operators
@@ -40,11 +38,12 @@ I just started working on this so basically nothing is implemented yet :(
   - [ ] configuration of options such as cycles per second
   - [ ] effects
   - [ ] samples
+  - [ ] LFOs
 - UI improvements
   - [ ] don't crash or stop music when an error occurs
   - [ ] show other users' cursors
-  - [ ] keyboard shortcuts
-  - [ ] syntax highlighting
+  - [x] keyboard shortcuts
+  - [x] syntax highlighting
 
 ## References
 - https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Advanced_techniques
