@@ -12,14 +12,27 @@
 </head>
 
 <body>
+  <script src="js/ace/src/ace.js"></script>
   <script src="js/main.js" type="module"></script>
 
-  <p>Click in the input box to start the audio engine.</p>
-  <p>Press ctrl+enter to run code.</p>
+  <p>Press alt+r to run code.</p>
 
-  <textarea id="editor" rows="20" cols="50">
+  <label for="keybindings">Keybindings</label>
+  <select name="keybindings" id="keybindings">
+    <option value="sublime">sublime</option>
+    <option value="emacs">emacs</option>
+    <option value="vim">vim</option>
+  </select>
+
+  <label for="theme">Theme</label>
+  <select name="theme" id="theme">
+    <option value="light">light</option>
+    <option value="dark">dark</option>
+  </select>
+
+  <div id="editor">
     // Loading text from server ...
-  </textarea>
+  </div>
 
 </body>
 </html>
