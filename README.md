@@ -45,7 +45,7 @@ I just started working on this so basically nothing is implemented yet :(
   - [x] don't crash or stop music when an error occurs
   - [ ] cancel scheduled events and re-run scheduling (after state is restored)
         after an exception is thrown
-  - [ ] display error messages from user code in html page rather than in the
+  - [x] display error messages from user code in html page rather than in the
         console
   - [ ] make error messages more meaningful
 	- this can be done by verifying the arguments of user functions such as

@@ -4,9 +4,11 @@ import { ListSequence, seq } from './Sequence.js';
 class Interpreter {
   /**
    * @param editor An Editor object.
+   * @param diagnostics A Diagnostics object.
    */
-  initialize(editor) {
+  initialize(editor, diagnostics) {
     this.editor = editor;
+    this.diagnostics = diagnostics;
     this.started = false;
     this.scheduler = null;
 
@@ -49,7 +51,7 @@ class Interpreter {
     this.started = true;
 
     let audioContext = new AudioContext();
-    this.scheduler = new Scheduler(audioContext);
+    this.scheduler = new Scheduler(audioContext, this.diagnostics);
     audioContext.resume();
 
     this.scheduler.start();
@@ -65,9 +67,8 @@ class Interpreter {
       // TODO find a way to not use eval
       eval(text);
     } catch (error) {
-      // TODO show error message in HTML
-      console.error("Error from user code.");
-      console.error(error);
+      this.diagnostics.clear();
+      this.diagnostics.printError(error);
       return;
     }
   }

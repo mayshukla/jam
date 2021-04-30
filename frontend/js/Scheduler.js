@@ -1,6 +1,7 @@
 export default class Scheduler {
-  constructor(audioContext) {
+  constructor(audioContext, diagnostics) {
     this.audioContext = audioContext;
+    this.diagnostics = diagnostics;
 
     // Period to call lookAheadAndSchedule.
     this.lookAheadAndSchedulePeriod = 25; // ms
@@ -55,6 +56,9 @@ export default class Scheduler {
       "type": type,
       "sequence": sequence
     });
+
+    this.diagnostics.clear();
+    this.diagnostics.print(this.getStatusString());
   }
 
   backupState() {
@@ -112,9 +116,9 @@ export default class Scheduler {
 	});
 
       } catch (error) {
-	// TODO show error message in HTML
-	console.error("Error during scheduling. Restoring previous state.");
-	console.error(error);
+	this.diagnostics.clear();
+	this.diagnostics.printError("Error during scheduling. Restoring previous state.");
+	this.diagnostics.printError(error);
 	this.restoreState();
       }
 
@@ -158,5 +162,23 @@ export default class Scheduler {
 
   unmute() {
     this.destination.gain.setValueAtTime(1, this.audioContext.currentTime);
+  }
+
+  /**
+   * Returns a string that shows some info about the state of the scheduler.
+   * This can be printed to the user using Diagnostics.
+   */
+  getStatusString() {
+    let status = "";
+
+    status += "Oscillators:<br/>";
+    for (const keyValue of this.oscillators.entries()) {
+      const name = keyValue[0];
+      const value = keyValue[1];
+      status += name + ": ";
+      status += value.type + "<br/>";
+    }
+
+    return status;
   }
 }
