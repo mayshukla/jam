@@ -36,6 +36,7 @@ I just started working on this so basically nothing is implemented yet :(
 		   new HalfSequence(new RandomSequence(new ListSequence(...)))
 
   - [ ] configuration of options such as cycles per second
+  - [ ] set volume of each named oscillator/track
   - [ ] effects
   - [ ] samples
   - [ ] LFOs
