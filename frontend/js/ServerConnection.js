@@ -41,10 +41,6 @@ export default class ServerConnection {
   }
 
   handleEdit() {
-    if (this.debounce === true) {
-      this.debounce = false;
-      return;
-    }
     this.text = this.editor.getText();
     let diff = this.dmp.diff(this.shadow, this.text);
     this.shadow = this.text;
@@ -57,8 +53,8 @@ export default class ServerConnection {
     let diff = diffMessage.diff;
     this.shadow = this.dmp.applyDiffExact(this.shadow, diff);
 
-    this.debounce = true;
+    let patch = this.dmp.createPatchFuzzy(this.text, diff);
     this.text = this.dmp.applyDiffFuzzy(this.text, diff);
-    this.editor.setText(this.text);
+    this.editor.applyPatch(patch);
   }
 }
