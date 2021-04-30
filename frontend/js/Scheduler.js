@@ -40,10 +40,10 @@ export default class Scheduler {
    * Adds or updates the oscillator with the given name
    * Oscillators are named to allow updating.
    * @param name The oscillators name as a string.
-   * @param type The type of oscillator (e.g. "sine").
+   * @param oscillatorBuilder An OscillatorBuilder instance
    * @param sequence The sequence object (e.g. a ListSequence)
    */
-  play(name, type, sequence) {
+  play(name, oscillatorBuilder, sequence) {
     // Unmute in case previously muted.
     this.unmute();
 
@@ -53,7 +53,7 @@ export default class Scheduler {
     this.dirty = true;
 
     this.oscillators.set(name, {
-      "type": type,
+      "oscillatorBuilder": oscillatorBuilder,
       "sequence": sequence
     });
 
@@ -99,7 +99,7 @@ export default class Scheduler {
       try {
 	this.oscillators.forEach(oscillator => {
 	  let notes = oscillator.sequence.getNotesForNextCycle();
-	  let type = oscillator.type;
+	  let oscillatorBuilder = oscillator.oscillatorBuilder;
 	  notes.forEach(note => {
 	    let freq = note.freq;
 
@@ -108,7 +108,7 @@ export default class Scheduler {
 	    let duration = note.duration * (1/this.cyclesPerSecond);
 
 	    this.scheduleOscillator(
-	      type,
+	      oscillatorBuilder,
 	      freq,
 	      startTime,
 	      duration);
@@ -133,15 +133,13 @@ export default class Scheduler {
 
   /**
    * Schedules an oscillator to play at startTime.
-   * @param type The type of oscillator (e.g. "sine").
+   * @param oscillatorBuilder An OscillatorBuilder instance.
    * @param freq The frequency to play.
    * @param startTime Start time (absolute) in seconds.
    * @param duration Duration in seconds.
    */
-  scheduleOscillator(type, freq, startTime, duration) {
-    // TODO can we avoid creating an oscillator every time?
-    let osc = this.audioContext.createOscillator();
-    osc.type = type;
+  scheduleOscillator(oscillatorBuilder, freq, startTime, duration) {
+    let osc = oscillatorBuilder.getOscillator(this.audioContext);
     osc.connect(this.destination);
     osc.frequency.setValueAtTime(freq, this.audioContext.currentTime);
     osc.start(startTime);
@@ -176,7 +174,7 @@ export default class Scheduler {
       const name = keyValue[0];
       const value = keyValue[1];
       status += name + ": ";
-      status += value.type + "<br/>";
+      status += value.oscillatorBuilder.type + "<br/>";
     }
 
     return status;

@@ -1,5 +1,6 @@
 import Scheduler from './Scheduler.js';
 import { ListSequence, seq } from './Sequence.js';
+import { BaseOscillatorBuilder } from './OscillatorBuilder.js';
 
 class Interpreter {
   /**
@@ -85,5 +86,16 @@ function play(name, type, sequence) {
 
 function setCyclesPerSecond(cps) {
   interpreterInstance.scheduler.setCyclesPerSecond(cps);
+}
+
+/**
+ * @param type (optional) Type of oscillator (e.g. "sine").
+ */
+function osc(type) {
+  let osc = new BaseOscillatorBuilder();
+  if (typeof type === "string") {
+    osc.setType(type);
+  }
+  return osc;
 }
 
