@@ -25,11 +25,9 @@ export default class DiffMatchPatch {
    * The patch will be an exact patch.
    */
   applyDiffExact(text, diff) {
-    this.dmp.Match_Distance = 0;
-    this.dmp.Match_Threshold = 0;
-    this.dmp.Patch_DeleteThreshold = 0;
+    this.setExactSettings();
 
-    let patch = this.dmp.patch_make(text, diff);
+    let patch = this.createPatchExact(text, diff);
     let newText = this.dmp.patch_apply(patch, text)[0];
     return newText;
   }
@@ -38,13 +36,39 @@ export default class DiffMatchPatch {
    * Like applyDiffExact but the patch is fuzzy.
    */
   applyDiffFuzzy(text, diff) {
+    this.setFuzzySettings();
+
+    let patch = this.createPatchFuzzy(text, diff);
+    let newText = this.dmp.patch_apply(patch, text)[0];
+    return newText;
+  }
+
+  /**
+   * Returns an exact patch.
+   */
+  createPatchExact(text, diff) {
+    this.setExactSettings();
+    return this.dmp.patch_make(text, diff);
+  }
+
+  /**
+   * Returns a fuzzy patch.
+   */
+  createPatchFuzzy(text, diff) {
+    this.setFuzzySettings();
+    return this.dmp.patch_make(text, diff);
+  }
+
+  setExactSettings() {
+    this.dmp.Match_Distance = 0;
+    this.dmp.Match_Threshold = 0;
+    this.dmp.Patch_DeleteThreshold = 0;
+  }
+
+  setFuzzySettings() {
     // TODO experiment with different values
     this.dmp.Match_Distance = 1000;
     this.dmp.Match_Threshold = 0.5;
     this.dmp.Patch_DeleteThreshold = 0.5;
-
-    let patch = this.dmp.patch_make(text, diff);
-    let newText = this.dmp.patch_apply(patch, text)[0];
-    return newText;
   }
 }
