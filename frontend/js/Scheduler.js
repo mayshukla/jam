@@ -11,10 +11,15 @@ export default class Scheduler {
     this.cyclesPerSecond = 1;
 
     this.oscillators = new Map();
+    this.oscillatorsBackup = new Map();
 
     // Place a gain node before final output to allow muting everything.
     this.destination = audioContext.createGain();
     this.destination.connect(this.audioContext.destination);
+
+    // True if this.oscillators has been modified by the user since the last
+    // scheduling event.
+    this.dirty = false;
   }
 
   /**
@@ -41,10 +46,33 @@ export default class Scheduler {
     // Unmute in case previously muted.
     this.unmute();
 
+    if (this.dirty === false) {
+      this.backupState();
+    }
+    this.dirty = true;
+
     this.oscillators.set(name, {
       "type": type,
       "sequence": sequence
     });
+  }
+
+  backupState() {
+    this.oscillatorsBackup.clear();
+    for (const keyValue of this.oscillators.entries()) {
+      const key = keyValue[0];
+      const value = keyValue[1];
+      this.oscillatorsBackup.set(key, value);
+    }
+  }
+
+  restoreState() {
+    this.oscillators.clear();
+    for (const keyValue of this.oscillatorsBackup.entries()) {
+      const key = keyValue[0];
+      const value = keyValue[1];
+      this.oscillators.set(key, value);
+    }
   }
 
   /**
@@ -64,23 +92,33 @@ export default class Scheduler {
       let cycleStartTime = this.nextCycleStartTime;
       this.nextCycleStartTime += 1 / this.cyclesPerSecond;
 
-      this.oscillators.forEach(oscillator => {
-	let notes = oscillator.sequence.getNotesForNextCycle();
-	let type = oscillator.type;
-	notes.forEach(note => {
-	  let freq = note.freq;
+      try {
+	this.oscillators.forEach(oscillator => {
+	  let notes = oscillator.sequence.getNotesForNextCycle();
+	  let type = oscillator.type;
+	  notes.forEach(note => {
+	    let freq = note.freq;
 
-	  // Convert to seconds
-	  let startTime = cycleStartTime + note.start * (1/this.cyclesPerSecond);
-	  let duration = note.duration * (1/this.cyclesPerSecond);
+	    // Convert to seconds
+	    let startTime = cycleStartTime + note.start * (1/this.cyclesPerSecond);
+	    let duration = note.duration * (1/this.cyclesPerSecond);
 
-	  this.scheduleOscillator(
-	    type,
-	    freq,
-	    startTime,
-	    duration);
+	    this.scheduleOscillator(
+	      type,
+	      freq,
+	      startTime,
+	      duration);
+	  });
 	});
-      });
+
+      } catch (error) {
+	// TODO show error message in HTML
+	console.error("Error during scheduling. Restoring previous state.");
+	console.error(error);
+	this.restoreState();
+      }
+
+      this.dirty = false;
     }
 
     window.setTimeout(

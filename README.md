@@ -42,7 +42,9 @@ I just started working on this so basically nothing is implemented yet :(
   - [ ] add support for parsing midi note numbers (e.g. 60 for middle C)
 	- this may be more intuitive for people who don't know music theory
 - UI improvements
-  - [ ] don't crash or stop music when an error occurs
+  - [x] don't crash or stop music when an error occurs
+  - [ ] cancel scheduled events and re-run scheduling (after state is restored)
+        after an exception is thrown
   - [ ] display error messages from user code in html page rather than in the
         console
   - [ ] make error messages more meaningful
