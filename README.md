@@ -43,6 +43,12 @@ I just started working on this so basically nothing is implemented yet :(
 	- this may be more intuitive for people who don't know music theory
 - UI improvements
   - [ ] don't crash or stop music when an error occurs
+  - [ ] display error messages from user code in html page rather than in the
+        console
+  - [ ] make error messages more meaningful
+	- this can be done by verifying the arguments of user functions such as
+      play() rather than allowing any invalid arguments to cause exceptions to
+      be thrown later.
   - [ ] show other users' cursors
   - [x] keyboard shortcuts
   - [x] syntax highlighting
