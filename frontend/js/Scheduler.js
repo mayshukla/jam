@@ -103,6 +103,11 @@ export default class Scheduler {
 	  notes.forEach(note => {
 	    let freq = note.freq;
 
+	    if (freq < 0) {
+	      // Rest
+	      return;
+	    }
+
 	    // Convert to seconds
 	    let startTime = cycleStartTime + note.start * (1/this.cyclesPerSecond);
 	    let duration = note.duration * (1/this.cyclesPerSecond);

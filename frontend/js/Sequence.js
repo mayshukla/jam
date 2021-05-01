@@ -3,7 +3,7 @@
  */
 export class Note {
   /**
-   * @param freq The frequency of the note.
+   * @param freq The frequency of the note. -1 for a rest.
    * @param start The start time as a fraction of the cycle length.
    *   e.g. 0.5 means the note should start halfway through the cycle.
    * @param duration Duration of note as fraction of cycle length.
@@ -18,6 +18,10 @@ export class Note {
 export class BaseSequence {
   chooseRand() {
     return new RandomChoiceSequence(this);
+  }
+
+  join(sequence) {
+    return new JoinSequence(this, sequence);
   }
 }
 
@@ -46,11 +50,8 @@ export class ListSequence extends BaseSequence {
 
     for (let i = 0; i < length; ++i) {
       let freq = this.notesList[i];
-      // Do not push rests to result.
-      if (freq > 0) {
-	// TODO allow variable duration
-	result.push(new Note(freq, duration * i, duration));
-      }
+      // TODO allow variable duration
+      result.push(new Note(freq, duration * i, duration));
     }
 
     return result;
@@ -80,6 +81,58 @@ export class RandomChoiceSequence extends BaseSequence {
     note.duration = 1;
     return [note];
   }
+}
+
+/**
+ * Joins 2 sequences together sequentially.
+ */
+export class JoinSequence extends BaseSequence {
+  constructor(sequence1, sequence2) {
+    super();
+    this.sequence1 = sequence1;
+    this.sequence2 = sequence2;
+  }
+
+  getNotesForNextCycle() {
+    let notes1 = this.sequence1.getNotesForNextCycle();
+    let notes2 = this.sequence2.getNotesForNextCycle();
+
+    if (notes1.length === 0) {
+      return notes2;
+    }
+    if (notes2.length === 0) {
+      return notes1;
+    }
+
+    let result = [];
+
+    let totalLength = notes1.length + notes2.length;
+    let sequence1End = notes1.length / totalLength;
+    for (let note of notes1) {
+      // map to (0, sequence1End)
+      note.start = mapRange(note.start, 0, 1, 0, sequence1End);
+      note.duration *= notes1.length / totalLength;
+      result.push(note);
+    }
+
+    for (let note of notes2) {
+      // map to (sequence1End, 1)
+      note.start = mapRange(note.start, 0, 1, sequence1End, 1);
+      note.duration *= notes2.length / totalLength;
+      result.push(note);
+    }
+
+    console.log(result);
+    return result;
+  }
+}
+
+/**
+ * Based on the arduino map() function.
+ * https://www.arduino.cc/reference/en/language/functions/math/map/
+ */
+function mapRange(x, in_min, in_max, out_min, out_max) {
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
 /**
