@@ -23,6 +23,10 @@ export class BaseSequence {
   join(sequence) {
     return new JoinSequence(this, sequence);
   }
+
+  times(n) {
+    return new MultiplySequence(this, n);
+  }
 }
 
 /**
@@ -123,6 +127,36 @@ export class JoinSequence extends BaseSequence {
     }
 
     console.log(result);
+    return result;
+  }
+}
+
+/**
+ * Repeats a sequence n times within one cycle.
+ * For now, n should be an integer.
+ */
+export class MultiplySequence extends BaseSequence {
+  constructor(sequence, n) {
+    super();
+    this.sequence = sequence;
+    this.n = Math.floor(n);
+    if (this.n <= 0) {
+      this.n = 1;
+    }
+  }
+
+  getNotesForNextCycle() {
+    let result = [];
+    for (let i = 0; i < this.n; ++i) {
+      let startTime = i * (1 / this.n);
+      let endTime = (i + 1) * (1 / this.n);
+      let notes = this.sequence.getNotesForNextCycle();
+      for (let note of notes) {
+	note.start = mapRange(note.start, 0, 1, startTime, endTime);
+	note.duration /= this.n;
+	result.push(note);
+      }
+    }
     return result;
   }
 }
