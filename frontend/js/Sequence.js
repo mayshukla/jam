@@ -15,17 +15,24 @@ export class Note {
   }
 }
 
+export class BaseSequence {
+  chooseRand() {
+    return new RandomChoiceSequence(this);
+  }
+}
+
 /**
  * Represents a list of notes to be equally spaced within in one cycle
  * The main public interface is the get notes for next cycle
  */
-export class ListSequence {
+export class ListSequence extends BaseSequence {
   /**
    * @param notesList A list of frequences of notes.
    *
    * A frequency of -1 represents a rest.
    */
   constructor(notesList) {
+    super();
     this.notesList = notesList;
   }
 
@@ -47,6 +54,31 @@ export class ListSequence {
     }
 
     return result;
+  }
+}
+
+/**
+ * Chooses one note from the given sequence to play.
+ */
+export class RandomChoiceSequence extends BaseSequence {
+  constructor(sequence) {
+    super();
+    this.sequence = sequence;
+  }
+
+  getNotesForNextCycle() {
+    let notes = this.sequence.getNotesForNextCycle();
+
+    if (notes.length === 0) {
+      return [];
+    }
+
+    let index = Math.floor(Math.random() * notes.length);
+    let note = notes[index];
+    note.start = 0;
+    note.length = 1;
+    note.duration = 1;
+    return [note];
   }
 }
 
