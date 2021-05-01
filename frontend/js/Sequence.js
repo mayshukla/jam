@@ -13,6 +13,10 @@ export class Note {
     this.start = start;
     this.duration = duration;
   }
+
+  clone() {
+    return new Note(this.freq, this.start, this.duration);
+  }
 }
 
 export class BaseSequence {
@@ -26,6 +30,10 @@ export class BaseSequence {
 
   times(n) {
     return new MultiplySequence(this, n);
+  }
+
+  divide(n) {
+    return new DivideSequence(this, n);
   }
 }
 
@@ -157,6 +165,49 @@ export class MultiplySequence extends BaseSequence {
 	result.push(note);
       }
     }
+    return result;
+  }
+}
+
+/**
+ * Plays a sequence n times slower.
+ * For now, n should be an integer.
+ */
+export class DivideSequence extends BaseSequence {
+  constructor(sequence, n) {
+    super();
+    this.sequence = sequence;
+    this.n = Math.floor(n);
+    if (this.n <= 0) {
+      this.n = 1;
+    }
+
+    this.state = 0;
+    this.originalNotes = [];
+  }
+
+  getNotesForNextCycle() {
+    if (this.state === 0) {
+      this.originalNotes = this.sequence.getNotesForNextCycle();
+    }
+    console.log(this.state, this.originalNotes);
+
+    let result = [];
+    for (let note of this.originalNotes) {
+      let startTime = this.state * (1 / this.n);
+      let endTime = (this.state + 1) * (1 / this.n);
+      if (note.start >= startTime && note.start < endTime) {
+	// Avoid modifying the original Note objects in this.originalNotes.
+	let newNote = note.clone();
+	newNote.start = mapRange(note.start, startTime, endTime, 0, 1);
+	newNote.duration *= this.n;
+	result.push(newNote);
+      }
+    }
+
+    this.state++;
+    this.state %= Math.floor(this.n);
+
     return result;
   }
 }
