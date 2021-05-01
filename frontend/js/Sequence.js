@@ -35,6 +35,10 @@ export class BaseSequence {
   divide(n) {
     return new DivideSequence(this, n);
   }
+
+  every(n) {
+    return new EveryNSequence(this, n);
+  }
 }
 
 /**
@@ -134,7 +138,6 @@ export class JoinSequence extends BaseSequence {
       result.push(note);
     }
 
-    console.log(result);
     return result;
   }
 }
@@ -190,7 +193,6 @@ export class DivideSequence extends BaseSequence {
     if (this.state === 0) {
       this.originalNotes = this.sequence.getNotesForNextCycle();
     }
-    console.log(this.state, this.originalNotes);
 
     let result = [];
     for (let note of this.originalNotes) {
@@ -203,6 +205,36 @@ export class DivideSequence extends BaseSequence {
 	newNote.duration *= this.n;
 	result.push(newNote);
       }
+    }
+
+    this.state++;
+    this.state %= Math.floor(this.n);
+
+    return result;
+  }
+}
+
+/**
+ * Plays a sequence every n times it is called.
+ * Otherwise, produces an empty sequence.
+ * n should be an integer.
+ */
+export class EveryNSequence extends BaseSequence {
+  constructor(sequence, n) {
+    super();
+    this.sequence = sequence;
+    this.n = Math.floor(n);
+    if (this.n <= 0) {
+      this.n = 1;
+    }
+
+    this.state = 0;
+  }
+
+  getNotesForNextCycle() {
+    let result = [];
+    if (this.state === this.n - 1) {
+      result = this.sequence.getNotesForNextCycle();
     }
 
     this.state++;

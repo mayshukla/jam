@@ -31,9 +31,9 @@ I just started working on this so basically nothing is implemented yet :(
   - [x] silence function
   - [ ] sequence manipulation through decorators and dot operators
 
-	  e.g. seq("c4 e4 g4").rand().half()
+	  e.g. seq("c4 e4 g4").shuffle().half()
 	       this would be a wrapper around:
-		   new HalfSequence(new RandomSequence(new ListSequence(...)))
+		   new HalfSequence(new ShuffleSequence(new ListSequence(...)))
 
   - [ ] configuration of options such as cycles per second
   - [ ] set volume of each named oscillator/track
@@ -55,6 +55,19 @@ I just started working on this so basically nothing is implemented yet :(
   - [ ] show other users' cursors
   - [x] keyboard shortcuts
   - [x] syntax highlighting
+
+## Ideas for sequence manipulation
+- [x] chooseRand
+- [x] join (concatenates 2 sequences)
+- [x] times
+- [x] divide
+- [x] every(n)
+- [ ] shuffle
+- [ ] reverse
+- [ ] chance(x) (will play the sequence with a probability x)
+- [ ] chord("c4 e4 g4") (plays notes simultaneously)
+- [ ] euclidean
+- [ ] microtonal notes, non-western scales
 
 ## References
 - https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Advanced_techniques
