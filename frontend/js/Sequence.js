@@ -43,7 +43,7 @@ export class BaseSequence {
 
 /**
  * Represents a list of notes to be equally spaced within in one cycle
- * The main public interface is the get notes for next cycle
+ * The main public interface is getNotesForNextCycle()
  */
 export class ListSequence extends BaseSequence {
   /**
@@ -54,25 +54,43 @@ export class ListSequence extends BaseSequence {
   constructor(notesList) {
     super();
     this.notesList = notesList;
+
+    let length = this.notesList.length;
+    let duration = 1 / length;
+    this.notes = [];
+
+    for (let i = 0; i < notesList.length; ++i) {
+      let freq = notesList[i];
+      this.notes.push(new Note(freq, duration * i, duration));
+    }
   }
 
   /**
    * Returns a list of Notes
    */
   getNotesForNextCycle() {
-    let length = this.notesList.length;
-    let duration = 1 / length;
-    let result = [];
-
-    for (let i = 0; i < length; ++i) {
-      let freq = this.notesList[i];
-      // TODO allow variable duration
-      result.push(new Note(freq, duration * i, duration));
-    }
-
-    return result;
+    return this.notes;
   }
 }
+
+/**
+ * Plays notes simultaneously.
+ */
+export class ChordSequence extends BaseSequence {
+  constructor(notesList) {
+    super();
+    this.notesList = notesList;
+    this.notes = [];
+    for (const freq of notesList) {
+      this.notes.push(new Note(freq, 0, 1));
+    }
+  }
+
+  getNotesForNextCycle() {
+    return this.notes;
+  }
+}
+
 
 /**
  * Chooses one note from the given sequence to play.
@@ -253,7 +271,7 @@ function mapRange(x, in_min, in_max, out_min, out_max) {
 }
 
 /**
- * Convenience function to turn a string into a ListSequence object
+ * Convenience function to parse a string into a ListSequence object
  */
 export function seq(text) {
   let list = text.split(" ")
@@ -262,6 +280,15 @@ export function seq(text) {
   return new ListSequence(list);
 }
 
+/**
+ * Convenience function to parse a string into a ChordSequence object
+ */
+export function chord(text) {
+  let list = text.split(" ")
+      .filter(x => x.length > 0)
+      .map(x => parseNote(x));
+  return new ChordSequence(list);
+}
 
 let A4 = 440.0;
 let semitone = Math.pow(2, 1/12);

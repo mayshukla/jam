@@ -1,5 +1,5 @@
 import Scheduler from './Scheduler.js';
-import { ListSequence, seq } from './Sequence.js';
+import { ListSequence, seq, chord } from './Sequence.js';
 import { BaseOscillatorBuilder } from './OscillatorBuilder.js';
 
 class Interpreter {

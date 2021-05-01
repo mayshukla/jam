@@ -65,7 +65,7 @@ I just started working on this so basically nothing is implemented yet :(
 - [ ] shuffle
 - [ ] reverse
 - [ ] chance(x) (will play the sequence with a probability x)
-- [ ] chord("c4 e4 g4") (plays notes simultaneously)
+- [x] chord("c4 e4 g4") (plays notes simultaneously)
 - [ ] euclidean
 - [ ] microtonal notes, non-western scales
 
