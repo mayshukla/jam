@@ -37,9 +37,10 @@ I just started working on this so basically nothing is implemented yet :(
 
   - [ ] configuration of options such as cycles per second
   - [ ] set volume of each named oscillator/track
+  - [ ] envelope for volume and filter
+  - [ ] LFOs
   - [ ] effects
   - [ ] samples
-  - [ ] LFOs
   - [ ] add support for parsing midi note numbers (e.g. 60 for middle C)
 	- this may be more intuitive for people who don't know music theory
 - UI improvements
@@ -55,6 +56,9 @@ I just started working on this so basically nothing is implemented yet :(
   - [ ] show other users' cursors
   - [x] keyboard shortcuts
   - [x] syntax highlighting
+- Documentation
+  - [ ] Tutorial/walkthrough
+  - [ ] Code overview
 
 ## Ideas for sequence manipulation
 - [x] chooseRand
