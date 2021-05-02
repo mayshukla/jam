@@ -38,6 +38,11 @@ export default class ServerConnection {
 	console.error("Unexpected message type.");
       }
     });
+
+    this.socket.addEventListener("close", (event) => {
+      console.log("Connection closed by server. Will attempt to reconnect in 1 second.");
+      setTimeout(() => { this.connect(); }, 1000);
+    });
   }
 
   handleEdit() {
