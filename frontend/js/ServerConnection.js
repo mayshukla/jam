@@ -47,11 +47,7 @@ export default class ServerConnection {
 
   handleEdit() {
     this.text = this.editor.getText();
-    let diff = this.dmp.diff(this.shadow, this.text);
-    this.shadow = this.text;
-
-    let message = new DiffMessage(diff);
-    this.socket.send(message.toJSON());
+    this.sendDiffToServer();
   }
 
   handleDiff(diffMessage) {
@@ -61,5 +57,20 @@ export default class ServerConnection {
     let patch = this.dmp.createPatchFuzzy(this.text, diff);
     this.text = this.dmp.applyDiffFuzzy(this.text, diff);
     this.editor.applyPatch(patch);
+
+    this.sendDiffToServer();
+  }
+
+  /**
+   * Compare this.shadow and this.text and send the diff so the server.
+   * Note: this function assumes this.shadow and this.text have already been
+   * updated.
+   */
+  sendDiffToServer() {
+    let diff = this.dmp.diff(this.shadow, this.text);
+    this.shadow = this.text;
+
+    let message = new DiffMessage(diff);
+    this.socket.send(message.toJSON());
   }
 }

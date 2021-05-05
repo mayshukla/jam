@@ -71,4 +71,16 @@ export default class DiffMatchPatch {
     this.dmp.Match_Threshold = 0.5;
     this.dmp.Patch_DeleteThreshold = 0.5;
   }
+
+  /**
+   * Returns true if the given diff is empty.
+   */
+  isDiffEmpty(diff) {
+    for (const item of diff) {
+      if (item[0] !== 0) {
+	return false;
+      }
+    }
+    return true;
+  }
 }

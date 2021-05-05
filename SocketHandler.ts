@@ -66,9 +66,12 @@ export default class SocketHandler {
 	this.deleteSocket(sock);
 	return;
       }
-      // TODO check if diff is empty
       let diff = this.dmp.diff(shadow, this.serverText);
       this.socketsToShadows.set(sock, this.serverText);
+
+      if (this.dmp.isDiffEmpty(diff)) {
+	return;
+      }
 
       let message = new DiffMessage(diff);
       await sock.send(message.toJSON());
