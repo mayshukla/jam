@@ -68,6 +68,10 @@ export default class ServerConnection {
    */
   sendDiffToServer() {
     let diff = this.dmp.diff(this.shadow, this.text);
+    if (this.dmp.isDiffEmpty(diff)) {
+      return;
+    }
+
     this.shadow = this.text;
 
     let message = new DiffMessage(diff);
