@@ -34,8 +34,7 @@ export default class SocketHandler {
 	  console.error("Unexpected message type.");
 	}
       } else if (isWebSocketCloseEvent(ev)) {
-	// Delete socket from list
-	this.socketsToShadows.delete(sock);
+	this.deleteSocket(sock);
       } else {
 	console.error("Unexpected socket event type:", typeof ev);
       }
@@ -60,6 +59,13 @@ export default class SocketHandler {
    */
   async updateAllClients() {
     this.socketsToShadows.forEach(async (shadow, sock) => {
+      if (sock.isClosed === true) {
+	// Sometimes, a socket gets closed and a close event was not received.
+	// In this case, we should not attempt to send a message to the closed
+	// socket.
+	this.deleteSocket(sock);
+	return;
+      }
       // TODO check if diff is empty
       let diff = this.dmp.diff(shadow, this.serverText);
       this.socketsToShadows.set(sock, this.serverText);
@@ -67,5 +73,13 @@ export default class SocketHandler {
       let message = new DiffMessage(diff);
       await sock.send(message.toJSON());
     });
+  }
+
+  /**
+   * Stop keeping track of the socket so that we don't accidentally send a
+   * message to a closed socket.
+   */
+  deleteSocket(sock: WebSocket) {
+    this.socketsToShadows.delete(sock);
   }
 }
